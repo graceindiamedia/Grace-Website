@@ -23,8 +23,15 @@ import {
   Copy,
   Check,
   CreditCard,
-  QrCode
+  QrCode,
+  Quote,
+  ChevronLeft,
+  ArrowUp,
+  Clock
 } from "lucide-react";
+
+import { AdminPage } from './pages/Admin';
+import { supabase } from './lib/supabase';
 
 // --- Components ---
 
@@ -264,42 +271,92 @@ const Ministries = () => {
 };
 
 const Programs = () => {
-  const programs = [
+  const defaultPrograms = [
     {
+      id: "1",
       title: "Vasanamum Vazhvum",
-      desc: "Weekly devotion presented by Bro B Porselvan Asir. Mondays & Thursdays.",
+      description: "Weekly devotion presented by Bro B Porselvan Asir. Mondays & Thursdays.",
       image: "https://picsum.photos/seed/devotion/600/400",
       time: "Mon & Thu"
     },
     {
+      id: "2",
       title: "Grace Voice",
-      desc: "Spiritual messages to uplift your soul. Every Saturday.",
+      description: "Spiritual messages to uplift your soul. Every Saturday.",
       image: "https://picsum.photos/seed/voice/600/400",
       time: "Saturdays"
+    },
+    {
+      id: "3",
+      title: "Prayer Cells",
+      description: "Small group gatherings for dedicated prayer, fellowship, and spiritual growth.",
+      image: "https://picsum.photos/seed/prayer/600/400",
+      time: "Weekly"
+    },
+    {
+      id: "4",
+      title: "Village Ministry",
+      description: "Reaching unreached villages across South India with the gospel and community support.",
+      image: "https://picsum.photos/seed/village/600/400",
+      time: "Ongoing"
+    },
+    {
+      id: "5",
+      title: "Children Ministry",
+      description: "Nurturing the next generation through Sunday schools, VBS, and moral education.",
+      image: "https://picsum.photos/seed/children/600/400",
+      time: "Sundays"
+    },
+    {
+      id: "6",
+      title: "Youth Ministry",
+      description: "Empowering young people to grow in faith, leadership, and service to society.",
+      image: "https://picsum.photos/seed/youth/600/400",
+      time: "Monthly"
+    },
+    {
+      id: "7",
+      title: "Charity",
+      description: "Extending God's love through practical help, relief work, and support for the needy.",
+      image: "https://picsum.photos/seed/charity/600/400",
+      time: "Ongoing"
     }
   ];
+
+  const [programs, setPrograms] = useState(defaultPrograms);
+
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      if (!import.meta.env.VITE_SUPABASE_URL) return;
+      const { data } = await supabase.from('programs').select('*').order('created_at', { ascending: false });
+      if (data && data.length > 0) {
+        setPrograms(data);
+      }
+    };
+    fetchPrograms();
+  }, []);
 
   return (
     <section id="programs" className="bg-ink text-white py-24 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
           <div>
-            <p className="text-accent uppercase tracking-widest text-sm font-semibold mb-4">Media Ministries</p>
-            <h2 className="text-4xl md:text-5xl font-serif">Voice of Grace</h2>
+            <p className="text-accent uppercase tracking-widest text-sm font-semibold mb-4">Our Initiatives</p>
+            <h2 className="text-4xl md:text-5xl font-serif">Programs & Ministries</h2>
           </div>
           <p className="text-white/60 max-w-sm mb-1">
-            Weekly devotions and messages presented by Bro B Porselvan Asir to guide your spiritual journey.
+            Explore the various ways we serve, reach out, and nurture our communities in faith.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {programs.map((p, idx) => (
             <motion.div 
-              key={p.title}
+              key={p.id || p.title}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: idx * 0.2 }}
+              transition={{ delay: idx * 0.1 }}
               className="group cursor-pointer"
             >
               <div className="relative aspect-video overflow-hidden rounded-2xl mb-6">
@@ -311,6 +368,7 @@ const Programs = () => {
                 />
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                   <PlayCircle className="w-16 h-16 text-white stroke-[1px]" />
+
                 </div>
                 <div className="absolute top-4 left-4 bg-accent/90 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest text-ink">
                   {p.time}
@@ -328,7 +386,92 @@ const Programs = () => {
   );
 };
 
+const Testimonials = () => {
+  const testimonials = [
+    {
+      text: "Grace Ministries came to our village when we had no hope. Now, we have a community of faith that supports us in every way.",
+      author: "Rajesh Kumar",
+      location: "Virudhunagar"
+    },
+    {
+      text: "The youth ministry transformed my life. I found purpose and a calling to serve others instead of wandering aimlessly.",
+      author: "Priya",
+      location: "Tuticorin"
+    },
+    {
+      text: "Through their charity work, my children received education and proper guidance. I am forever grateful for their support.",
+      author: "Lakshmi",
+      location: "Tirunelveli"
+    }
+  ];
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const next = () => setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+  const prev = () => setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+
+  return (
+    <section className="py-24 px-6 bg-paper overflow-hidden">
+      <div className="max-w-4xl mx-auto text-center">
+        <Quote className="w-12 h-12 text-primary/20 mx-auto mb-8" />
+        <h2 className="text-3xl md:text-5xl font-serif mb-16 italic">Voices of Grace</h2>
+        
+        <div className="relative min-h-[250px] flex items-center justify-center">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentIndex}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
+              className="absolute w-full px-12"
+            >
+              <p className="text-xl md:text-2xl text-ink/80 leading-relaxed mb-8">
+                "{testimonials[currentIndex].text}"
+              </p>
+              <div className="flex flex-col items-center">
+                <span className="font-bold uppercase tracking-widest text-xs mb-1">
+                  {testimonials[currentIndex].author}
+                </span>
+                <span className="text-primary text-[10px] uppercase tracking-widest">
+                  {testimonials[currentIndex].location}
+                </span>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+          
+          <button 
+            onClick={prev}
+            className="absolute left-0 p-3 bg-white rounded-full shadow-sm hover:scale-105 transition-transform text-ink/60 hover:text-primary z-10"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+          
+          <button 
+            onClick={next}
+            className="absolute right-0 p-3 bg-white rounded-full shadow-sm hover:scale-105 transition-transform text-ink/60 hover:text-primary z-10"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+        </div>
+        
+        <div className="flex justify-center gap-2 mt-12">
+          {testimonials.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrentIndex(idx)}
+              className={`w-2 h-2 rounded-full transition-all ${idx === currentIndex ? 'bg-primary w-6' : 'bg-ink/20 hover:bg-ink/40'}`}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const Contact = () => {
+  const [formType, setFormType] = useState<'general' | 'prayer'>('general');
+
   return (
     <section id="contact" className="py-24 px-6">
       <div className="max-w-7xl mx-auto">
@@ -367,18 +510,52 @@ const Contact = () => {
           </div>
 
           <div className="bg-white p-10 rounded-[40px] shadow-sm border border-ink/5">
-            <h3 className="text-2xl font-serif mb-6">Send us a message</h3>
-            <form className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <input type="text" placeholder="First Name" className="w-full px-5 py-4 rounded-2xl bg-paper/50 border-none focus:ring-2 focus:ring-primary/20 text-sm" />
-                <input type="text" placeholder="Last Name" className="w-full px-5 py-4 rounded-2xl bg-paper/50 border-none focus:ring-2 focus:ring-primary/20 text-sm" />
-              </div>
-              <input type="email" placeholder="Email Address" className="w-full px-5 py-4 rounded-2xl bg-paper/50 border-none focus:ring-2 focus:ring-primary/20 text-sm" />
-              <textarea placeholder="Your Message" rows={4} className="w-full px-5 py-4 rounded-2xl bg-paper/50 border-none focus:ring-2 focus:ring-primary/20 text-sm resize-none" />
-              <button className="w-full bg-ink text-white py-4 rounded-2xl font-bold uppercase tracking-widest text-xs hover:bg-primary transition-colors">
-                Send Message
+            <div className="flex gap-4 mb-8">
+              <button 
+                onClick={() => setFormType('general')}
+                className={`flex-1 py-3 text-xs font-bold uppercase tracking-widest rounded-xl transition-colors ${formType === 'general' ? 'bg-ink text-white' : 'bg-paper text-ink/60 hover:text-ink'}`}
+              >
+                General Message
               </button>
-            </form>
+              <button 
+                onClick={() => setFormType('prayer')}
+                className={`flex-1 py-3 text-xs font-bold uppercase tracking-widest rounded-xl transition-colors ${formType === 'prayer' ? 'bg-primary text-white' : 'bg-paper text-ink/60 hover:text-ink'}`}
+              >
+                Prayer Request
+              </button>
+            </div>
+            
+            <AnimatePresence mode="wait">
+              <motion.form 
+                key={formType}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="space-y-4"
+              >
+                {formType === 'prayer' && (
+                  <p className="text-xs text-ink/50 italic mb-4">
+                    Your prayer request will be sent to a private, admin-only view where our intercessory team will pray for you.
+                  </p>
+                )}
+                <div className="grid grid-cols-2 gap-4">
+                  <input type="text" placeholder="First Name" className="w-full px-5 py-4 rounded-2xl bg-paper/50 border-none focus:ring-2 focus:ring-primary/20 text-sm" />
+                  <input type="text" placeholder="Last Name" className="w-full px-5 py-4 rounded-2xl bg-paper/50 border-none focus:ring-2 focus:ring-primary/20 text-sm" />
+                </div>
+                <input type="email" placeholder="Email Address" className="w-full px-5 py-4 rounded-2xl bg-paper/50 border-none focus:ring-2 focus:ring-primary/20 text-sm" />
+                {formType === 'prayer' && (
+                  <input type="text" placeholder="Phone Number (Optional)" className="w-full px-5 py-4 rounded-2xl bg-paper/50 border-none focus:ring-2 focus:ring-primary/20 text-sm" />
+                )}
+                <textarea 
+                  placeholder={formType === 'general' ? "Your Message" : "Describe your prayer request..."} 
+                  rows={4} 
+                  className="w-full px-5 py-4 rounded-2xl bg-paper/50 border-none focus:ring-2 focus:ring-primary/20 text-sm resize-none" 
+                />
+                <button className={`w-full text-white py-4 rounded-2xl font-bold uppercase tracking-widest text-xs transition-colors ${formType === 'general' ? 'bg-ink hover:bg-primary' : 'bg-primary hover:bg-ink'}`}>
+                  {formType === 'general' ? 'Send Message' : 'Submit Prayer Request'}
+                </button>
+              </motion.form>
+            </AnimatePresence>
           </div>
         </div>
       </div>
@@ -386,36 +563,53 @@ const Contact = () => {
   );
 };
 
-const Footer = () => {
+const Footer = ({ setView }: { setView: (v: string) => void }) => {
   return (
     <footer className="border-t border-ink/5 pt-20 pb-10 px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start gap-12 mb-20">
+        <div className="flex flex-col lg:flex-row justify-between items-start gap-12 mb-20">
           <div className="max-w-xs">
             <div className="flex items-center gap-2 mb-6">
               <Church className="w-8 h-8 text-primary" />
               <span className="serif text-xl font-bold tracking-tight uppercase">Grace Ministries</span>
             </div>
-            <p className="text-ink/60 text-sm leading-relaxed">
+            <p className="text-ink/60 text-sm leading-relaxed mb-6">
               Serving the villages of South India with faith, hope, and compassion since 2021.
             </p>
+            <form className="flex flex-col gap-2">
+              <label className="text-xs font-bold uppercase tracking-widest text-ink/80">Subscribe to Updates</label>
+              <div className="flex">
+                <input 
+                  type="email" 
+                  placeholder="Your email address" 
+                  className="bg-paper/50 px-4 py-3 rounded-l-xl border-none focus:ring-2 focus:ring-primary/20 text-sm w-full outline-none"
+                  required
+                />
+                <button 
+                  type="button" 
+                  className="bg-ink text-white px-5 py-3 rounded-r-xl text-xs font-bold uppercase tracking-widest hover:bg-primary transition-colors"
+                >
+                  Join
+                </button>
+              </div>
+            </form>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-12">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-12 lg:w-2/3">
             <div>
               <h4 className="font-bold uppercase tracking-widest text-[10px] mb-6 text-ink/40">Navigation</h4>
               <ul className="space-y-3 text-sm">
-                <li><a href="#" className="hover:text-primary">Home</a></li>
-                <li><a href="#ministries" className="hover:text-primary">Ministries</a></li>
-                <li><a href="#about" className="hover:text-primary">About</a></li>
-                <li><a href="#contact" className="hover:text-primary">Contact</a></li>
+                <li><button onClick={() => setView('home')} className="hover:text-primary">Home</button></li>
+                <li><button onClick={() => setView('home')} className="hover:text-primary">Ministries</button></li>
+                <li><button onClick={() => setView('about')} className="hover:text-primary">About</button></li>
+                <li><button onClick={() => setView('home')} className="hover:text-primary">Contact</button></li>
               </ul>
             </div>
             <div>
               <h4 className="font-bold uppercase tracking-widest text-[10px] mb-6 text-ink/40">Social</h4>
               <ul className="space-y-3 text-sm flex flex-col">
-                <a href="https://www.instagram.com/porselvan_asir" className="flex items-center gap-2 hover:text-primary"><Instagram className="w-4 h-4" /> Instagram</a>
-                <a href="https://www.facebook.com/porselvanasir" className="flex items-center gap-2 hover:text-primary"><Facebook className="w-4 h-4" /> Facebook</a>
+                <a href="#" className="flex items-center gap-2 hover:text-primary"><Instagram className="w-4 h-4" /> Instagram</a>
+                <a href="#" className="flex items-center gap-2 hover:text-primary"><Facebook className="w-4 h-4" /> Facebook</a>
               </ul>
             </div>
             <div>
@@ -433,7 +627,7 @@ const Footer = () => {
             © 2026 GRACE MINISTRIES INDIA. ALL RIGHTS RESERVED.
           </p>
           <p className="text-[10px] text-ink/40 uppercase tracking-widest">
-            DESIGNED AND MAINTAINED BY GRACE MINISTRIES
+            DESIGNED WITH GRACE
           </p>
         </div>
       </div>
@@ -742,30 +936,278 @@ const AboutPage = () => {
   );
 };
 
+const BackToTop = () => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const toggleVisibility = () => {
+      if (window.scrollY > 300) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    };
+
+    window.addEventListener("scroll", toggleVisibility);
+    return () => window.removeEventListener("scroll", toggleVisibility);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  };
+
+  return (
+    <AnimatePresence>
+      {isVisible && (
+        <motion.button
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.5 }}
+          onClick={scrollToTop}
+          className="fixed bottom-8 right-8 z-50 p-4 bg-primary text-white rounded-full shadow-lg hover:scale-110 hover:bg-ink transition-all"
+          aria-label="Back to top"
+        >
+          <ArrowUp className="w-6 h-6" />
+        </motion.button>
+      )}
+    </AnimatePresence>
+  );
+};
+
+const UpcomingEvents = () => {
+  const defaultEvents = [
+    {
+      id: "1",
+      title: "Tuticorin Village Outreach",
+      date: "Oct 15, 2026",
+      time: "09:00 AM - 04:00 PM",
+      location: "Periyanayagapuram, Tuticorin",
+      type: "Village Visit",
+      description: "Join our missionary team as we visit families in Periyanayagapuram to share the gospel, distribute essentials, and pray with the locals.",
+      image: "https://picsum.photos/seed/outreach1/600/400"
+    },
+    {
+      id: "2",
+      title: "Youth Intercessory Prayer",
+      date: "Oct 20, 2026",
+      time: "06:30 PM - 08:30 PM",
+      location: "Main Grace Church",
+      type: "Prayer Cell",
+      description: "A special evening dedicated to our youth, focusing on intercessory prayer, worship, and spiritual empowerment for the next generation.",
+      image: "https://picsum.photos/seed/youthprayer/600/400"
+    },
+    {
+      id: "3",
+      title: "Virudhunagar Mission Trip",
+      date: "Nov 02, 2026",
+      time: "07:00 AM - 07:00 PM",
+      location: "Virudhunagar District",
+      type: "Village Visit",
+      description: "A full-day mission trip to the unreached villages of Virudhunagar district. We will be surveying areas for new church plants and hosting open-air meetings.",
+      image: "https://picsum.photos/seed/virudhunagar/600/400"
+    }
+  ];
+
+  const [events, setEvents] = useState(defaultEvents);
+  const [selectedEvent, setSelectedEvent] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      if (!import.meta.env.VITE_SUPABASE_URL) return;
+      const { data } = await supabase.from('events').select('*').order('created_at', { ascending: false });
+      if (data && data.length > 0) {
+        setEvents(data);
+      }
+    };
+    fetchEvents();
+  }, []);
+
+  return (
+    <section className="py-24 px-6 bg-ink text-white relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-96 h-96 bg-primary/20 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+      
+      <div className="max-w-7xl mx-auto relative z-10">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+          <div>
+            <p className="text-accent uppercase tracking-widest text-sm font-semibold mb-4">Join Us</p>
+            <h2 className="text-4xl md:text-5xl font-serif">Upcoming Events</h2>
+          </div>
+          <p className="text-white/60 max-w-sm mb-1">
+            Stay updated with our monthly schedules for prayer cells, village visits, and community outreach programs.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {events.map((evt, idx) => (
+            <motion.div 
+              key={evt.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: idx * 0.1 }}
+              onClick={() => setSelectedEvent(evt)}
+              className="bg-white/5 rounded-3xl overflow-hidden border border-white/10 cursor-pointer group hover:border-primary/50 transition-colors"
+            >
+              <div className="h-48 overflow-hidden relative">
+                <img 
+                  src={evt.image} 
+                  alt={evt.title} 
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                  referrerPolicy="no-referrer"
+                />
+                <div className="absolute top-4 left-4 bg-accent text-ink px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
+                  {evt.type}
+                </div>
+              </div>
+              <div className="p-6">
+                <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-widest text-primary mb-4">
+                  <span className="flex items-center gap-1"><Calendar className="w-4 h-4" /> {evt.date}</span>
+                </div>
+                <h3 className="text-2xl font-serif mb-2 group-hover:text-primary transition-colors">{evt.title}</h3>
+                <div className="flex items-center gap-2 text-white/50 text-sm mt-4">
+                  <MapPin className="w-4 h-4" /> {evt.location}
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {selectedEvent && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedEvent(null)}
+            className="fixed inset-0 bg-ink/80 backdrop-blur-sm z-50 flex items-center justify-center p-6"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-paper text-ink max-w-2xl w-full rounded-[40px] overflow-hidden shadow-2xl relative"
+            >
+              <div className="relative h-64">
+                <img 
+                  src={selectedEvent.image} 
+                  alt={selectedEvent.title} 
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+                <button 
+                  onClick={() => setSelectedEvent(null)}
+                  className="absolute top-6 right-6 w-10 h-10 bg-black/20 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-black/40 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="p-10">
+                <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-primary mb-4">
+                  <span className="bg-primary/10 px-3 py-1 rounded-full">{selectedEvent.type}</span>
+                </div>
+                <h3 className="text-3xl md:text-4xl font-serif mb-6">{selectedEvent.title}</h3>
+                
+                <div className="grid grid-cols-2 gap-6 mb-8 border-y border-ink/10 py-6">
+                  <div className="flex items-start gap-3">
+                    <Clock className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-[10px] uppercase tracking-widest text-ink/40 font-bold mb-1">Date & Time</p>
+                      <p className="text-sm font-medium">{selectedEvent.date}</p>
+                      <p className="text-sm text-ink/60">{selectedEvent.time}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <MapPin className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-[10px] uppercase tracking-widest text-ink/40 font-bold mb-1">Location</p>
+                      <p className="text-sm font-medium">{selectedEvent.location}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <p className="text-ink/80 leading-relaxed mb-8">
+                  {selectedEvent.description}
+                </p>
+                
+                <div className="flex gap-4">
+                  <button 
+                    onClick={() => {
+                      setSelectedEvent(null);
+                      window.location.hash = "#contact";
+                    }}
+                    className="flex-1 bg-ink text-white py-4 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-primary transition-colors"
+                  >
+                    Join Event
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </section>
+  );
+};
+
 export default function App() {
-  const [view, setView] = useState('home');
+  const [view, setView] = useState(() => {
+    const path = window.location.pathname;
+    if (path.startsWith('/admin')) return 'admin';
+    if (path.startsWith('/about')) return 'about';
+    if (path.startsWith('/donate')) return 'donate';
+    return 'home';
+  });
+
+  const handleSetView = (newView: string) => {
+    setView(newView);
+    const path = newView === 'home' ? '/' : `/${newView}`;
+    window.history.pushState({}, '', path);
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [view]);
 
+  useEffect(() => {
+    const handlePopState = () => {
+      const path = window.location.pathname;
+      if (path.startsWith('/admin')) setView('admin');
+      else if (path.startsWith('/about')) setView('about');
+      else if (path.startsWith('/donate')) setView('donate');
+      else setView('home');
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   return (
     <div className="min-h-screen">
-      <Header setView={setView} currentView={view} />
+      <Header setView={handleSetView} currentView={view} />
       {view === 'home' ? (
         <>
           <Hero />
           <Stats />
           <Ministries />
           <Programs />
+          <UpcomingEvents />
+          <Testimonials />
           <Contact />
         </>
       ) : view === 'about' ? (
         <AboutPage />
+      ) : view === 'admin' ? (
+        <AdminPage />
       ) : (
         <DonatePage />
       )}
-      <Footer />
+      <Footer setView={handleSetView} />
+      <BackToTop />
     </div>
   );
 }
