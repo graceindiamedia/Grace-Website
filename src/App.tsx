@@ -241,7 +241,7 @@ const Ministries = () => {
               </div>
             </div>
             <button className="mt-10 group flex items-center gap-2 text-sm font-bold uppercase tracking-widest border-b-2 border-primary pb-1">
-              About Our Mission <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" href="#about"/>
+              About Our Mission <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" href="about"/>
             </button>
           </motion.div>
 
