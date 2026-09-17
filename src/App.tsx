@@ -241,7 +241,7 @@ const Ministries = () => {
               </div>
             </div>
             <button className="mt-10 group flex items-center gap-2 text-sm font-bold uppercase tracking-widest border-b-2 border-primary pb-1">
-              About Our Mission <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              About Our Mission <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" href="#about"/>
             </button>
           </motion.div>
 
@@ -845,7 +845,7 @@ const AboutPage = () => {
             <h1 className="text-5xl md:text-7xl font-serif mb-8 italic">Started with <br/> a Prayer</h1>
             <div className="space-y-6 text-ink/70 leading-relaxed text-lg">
               <p>
-                In the year 1985, Bro. B Porselvan Asir and a group of students from Tuticorin College gathered in prayer. 
+                In the year 1985, Bro. B. Porselvan Asir and a group of students from Tuticorin College gathered in prayer. 
                 During these moments of devotion, God placed a profound burden and vision in their hearts.
               </p>
               <p>
