@@ -261,7 +261,7 @@ const Ministries = () => {
             </motion.div>
             <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-accent/20 rounded-full blur-3xl -z-10" />
             <div className="absolute top-1/2 right-[-20%] vertical-text opacity-10 pointer-events-none text-8xl font-serif select-none">
-              TUTICORIN
+              Our Founding General Secretary
             </div>
           </div>
         </div>
