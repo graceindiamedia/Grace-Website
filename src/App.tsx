@@ -253,7 +253,7 @@ const Ministries = () => {
               className="aspect-[4/5] rounded-[100px] overflow-hidden"
             >
               <img 
-                src="https://picsum.photos/seed/grace-church/800/1000" 
+                src="/images/bpa.jpeg" 
                 alt="Ministry Work" 
                 className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"
