@@ -253,7 +253,7 @@ const Ministries = () => {
               className="aspect-[4/5] rounded-[100px] overflow-hidden"
             >
               <img 
-                src="/public/images/bpa.jpeg" 
+                src="/images/bpa.jpeg" 
                 alt="Ministry Work" 
                 className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"
