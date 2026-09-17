@@ -240,7 +240,9 @@ const Ministries = () => {
                 “Evangelism in Tamil villages followed by evangelism throughout India.”
               </div>
             </div>
-            <button href: "#about", className="mt-10 group flex items-center gap-2 text-sm font-bold uppercase tracking-widest border-b-2 border-primary pb-1">
+            <button  onClick={scrollToAbout}
+              role="link", 
+            className="mt-10 group flex items-center gap-2 text-sm font-bold uppercase tracking-widest border-b-2 border-primary pb-1">
               About Our Mission <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform"/>
             </button>
           </motion.div>
